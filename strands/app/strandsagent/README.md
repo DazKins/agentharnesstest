@@ -45,8 +45,9 @@ cross the container boundary locally:
   container's environment, so a shell in the container can act as that identity. Use a profile
   that can only call Bedrock if that matters. The exported credentials expire with the SSO session;
   restart the agent after `aws sso login`.
-- **Network.** The container has normal outbound network access, and Docker publishes its port on
-  all host interfaces (see "Locking down the ports" below).
+- **Network.** The container has normal outbound network access, and Docker publishes its port
+  (8080, or 8082 from the web UI) on all host interfaces, so firewall ports 8080-8099 if the host
+  is reachable from other machines.
 
 To add a tool, write a function with `@tool` (see `agent_tools.py`) and add it to `TOOLS` in
 `main.py`. Strands builds the tool spec from the signature and docstring.
@@ -71,22 +72,6 @@ and give it a TTY:
 mkdir -p /tmp/agentcore-bin && printf '#!/bin/sh\nexit 0\n' > /tmp/agentcore-bin/xdg-open && chmod +x /tmp/agentcore-bin/xdg-open
 PATH=/tmp/agentcore-bin:$PATH script -qfec "agentcore dev --skip-deploy" /tmp/strandsagent-ui.log
 ```
-
-## Locking down the ports
-
-Docker publishes the agent container on `0.0.0.0` (8080, or 8082 when started from the web UI),
-which makes it reachable from the VPC and the tailnet, bypassing the proxy below. Drop external
-traffic to ports 8080-8099 (not persistent across reboots):
-
-```bash
-for ipt in iptables ip6tables; do for ifc in enX0 tailscale0; do
-  sudo $ipt -I DOCKER-USER -i $ifc -p tcp -m conntrack --ctorigdstport 8080:8099 -m comment --comment agentcore-dev -j DROP
-  sudo $ipt -I INPUT -i $ifc -p tcp --dport 8080:8099 -m comment --comment agentcore-dev -j DROP
-done; done
-```
-
-Remove them with the same commands using `-D` instead of `-I`. One set of rules covers every
-project in this repo.
 
 ## Serving on the tailnet
 
