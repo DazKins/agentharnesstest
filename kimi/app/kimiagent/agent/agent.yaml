@@ -1,0 +1,25 @@
+# Kimi agent spec. Tools are loaded by import path ("module:Class").
+#
+# Full access: shell, file read/write anywhere the process user can reach, web fetch,
+# and a "coder" subagent (inherited from Kimi's default agent). Every tool call is
+# auto-approved (yolo=True in main.py). Only expose this agent to people you would
+# give a shell on the host.
+version: 1
+agent:
+  extend: default
+  name: kimiagent
+  system_prompt_path: ./system.md
+  tools:
+    - "kimi_cli.tools.multiagent:Task"
+    - "kimi_cli.tools.todo:SetTodoList"
+    - "kimi_cli.tools.think:Think"
+    - "kimi_cli.tools.shell:Shell"
+    - "kimi_cli.tools.file:ReadFile"
+    - "kimi_cli.tools.file:ReadMediaFile"
+    - "kimi_cli.tools.file:Glob"
+    - "kimi_cli.tools.file:Grep"
+    - "kimi_cli.tools.file:WriteFile"
+    - "kimi_cli.tools.file:StrReplaceFile"
+    - "kimi_cli.tools.web:FetchURL"
+    - "kimi_cli.tools.web:SearchWeb" # skipped unless a Moonshot search service is configured
+    - "kimiagent_tools:CurrentTime"

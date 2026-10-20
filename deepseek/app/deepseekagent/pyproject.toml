@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "deepseekagent"
+version = "0.1.0"
+description = "AgentCore Runtime agent using the DeepSeek Harness with Claude on Amazon Bedrock"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aws-opentelemetry-distro",
+    "bedrock-agentcore >= 1.9.1",
+    # Pre-release only so far. The runtime (native `dsh` binary, per platform) is pinned
+    # explicitly so uv accepts its pre-release too.
+    "deepseek-harness-sdk == 0.1.5rc1",
+    "deepseek-harness-runtime-bin == 0.1.5rc1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]

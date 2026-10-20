@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claudeagent"
+version = "0.1.0"
+description = "AgentCore Runtime agent using the Claude Agent SDK with Claude on Amazon Bedrock"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aws-opentelemetry-distro",
+    "bedrock-agentcore >= 1.9.1",
+    # Bundles the Claude Code CLI (a native binary, per platform).
+    "claude-agent-sdk >= 0.2.168",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "strandsagent"
+version = "0.1.0"
+description = "AgentCore Runtime agent using Strands Agents with Claude on Amazon Bedrock"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aws-opentelemetry-distro",
+    "bedrock-agentcore >= 1.9.1",
+    "strands-agents >= 1.61.1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]

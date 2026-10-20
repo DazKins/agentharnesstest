@@ -1,0 +1,30 @@
+# DeepSeek Harness profile patch, applied over the bundled `sdk` profile. main.py adds a
+# second, generated patch for the Bedrock model route, the system prompt, and the tool
+# plugins in ../tools/ (plugin paths must be absolute).
+#
+# Full access: bash, file read/write/edit/search anywhere the process user can reach,
+# web fetch, subagents, and workflows. main.py sets DSH_PERMISSION_MODE=danger-full-access,
+# so there is no sandbox and no approval prompt. Only expose this agent to people you
+# would give a shell on the host.
+#
+# See the full plugin tree with:
+#   DSH_HOME=/tmp/dsh dsh --profile sdk --patch agent/harness.patch.yml --dump-config
+
+# Telemetry and log uploads to DeepSeek's services.
+- id: session-telemetry-otel
+  disabled: true
+- id: session-log-deepseek
+  disabled: true
+
+# Web search goes through DeepSeek's search API, which needs a DeepSeek API key. Web fetch
+# is plain HTTP and stays on.
+- id: web-search-deepseek
+  disabled: true
+- id: tool-web
+  config:
+    fetch: true
+    search: false
+
+# ask_user_question waits for an answer the AgentCore entrypoint has no way to give.
+- id: user-questions
+  disabled: true
